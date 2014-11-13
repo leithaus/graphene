@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- DOCTYPE GraphL [ -->
+<!ELEMENT Integer EMPTY>
+<!ATTLIST Integer value CDATA #REQUIRED>
+<!ELEMENT Double EMPTY>
+<!ATTLIST Double value CDATA #REQUIRED>
+<!ELEMENT String EMPTY>
+<!ATTLIST String value CDATA #REQUIRED>
+
+<!ELEMENT UIdent EMPTY>
+<!ATTLIST UIdent value CDATA #REQUIRED>
+<!ELEMENT LIdent EMPTY>
+<!ATTLIST LIdent value CDATA #REQUIRED>
+<!ELEMENT Wild EMPTY>
+<!ATTLIST Wild value CDATA #REQUIRED>
+
+<!ELEMENT Isolated ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty), (Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT Selected ((Selection | ComprehensionExpr))>
+<!ELEMENT Connected ((EdgeName | EdgeWildcard), (VertexSelection | VertexIntensionSelection), (VertexSelection | VertexIntensionSelection))>
+<!ELEMENT Recursed ((UIdent), (FormalsFullForm | FormalsVertexForm), (Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty), (ActualsFullForm | ActualsVertexForm))>
+<!ELEMENT Pointed ((VertexQuotation | VertexIntegral | VertexString))>
+<!ELEMENT Variable ((UIdent))>
+<!ELEMENT Applied ((UIdent), (ActualsFullForm | ActualsVertexForm))>
+<!ELEMENT Empty (EMPTY)>
+
+<!ELEMENT FormalsFullForm ((LIdent)*, (LIdent)*)>
+<!ELEMENT FormalsVertexForm ((LIdent)*)>
+
+<!ELEMENT ActualsFullForm ((VertexActualized)*, (EdgeActualized)*)>
+<!ELEMENT ActualsVertexForm ((VertexActualized)*)>
+
+<!ELEMENT Selection ((BoundVertex | BoundEdge | BoundGraph)*, (Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT ComprehensionExpr ((ComprehensionForm))>
+
+<!ELEMENT VertexSelection ((LRBoundVertex)*, (Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT VertexIntensionSelection ((VertexComprehensionForm))>
+
+<!ELEMENT ComprehensionForm ((GenVertex | GenEdge | GenGraph), (ConditionIn | DeclIn)*)>
+
+<!ELEMENT VertexComprehensionForm ((LRGenVertex), (ConditionIn | DeclIn)*)>
+
+<!ELEMENT EdgeComprehensionForm ((LRGenEdge), (ConditionIn | DeclIn)*)>
+
+<!ELEMENT GraphComprehensionForm ((LRGenGraph), (ConditionIn | DeclIn)*)>
+
+<!ELEMENT LRBoundVertex ((VertexExprLabel), (VertexQuotation | VertexIntegral | VertexString))>
+
+<!ELEMENT LRBoundEdge ((EdgePatternDecon), (EdgeExprNominal | EdgeExprStruct))>
+
+<!ELEMENT LRBoundGraph ((GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral), (Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT BoundVertex ((LRBoundVertex))>
+<!ELEMENT BoundEdge ((LRBoundEdge))>
+<!ELEMENT BoundGraph ((LRBoundGraph))>
+
+<!ELEMENT LRGenVertex ((VertexExprLabel), (VertexIntension | VertexExtenionExpr))>
+
+<!ELEMENT LRGenEdge ((EdgePatternDecon), (EdgeIntension | EdgeExtenionExpr))>
+
+<!ELEMENT LRGenGraph ((GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral), (GraphIntension | GraphExtenionExpr))>
+
+<!ELEMENT GenVertex ((LRGenVertex))>
+<!ELEMENT GenEdge ((LRGenEdge))>
+<!ELEMENT GenGraph ((LRGenGraph))>
+
+<!ELEMENT VertexSum ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated), (VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+<!ELEMENT VertexMult ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated), (VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+<!ELEMENT VertexLiteral ((VertexQuotation | VertexIntegral | VertexString))>
+<!ELEMENT VertexVariable ((LIdent))>
+<!ELEMENT VertexNegated ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+
+<!ELEMENT VertexExprLabel ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+
+<!ELEMENT VertexActualized ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+
+<!ELEMENT EdgeExprNominal ((EdgeQuotation | EdgeIntegral | EdgeString))>
+<!ELEMENT EdgeExprStruct ((EdgeQuotation | EdgeIntegral | EdgeString), (VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated), (VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+
+<!ELEMENT EdgeName ((EdgeQuotation | EdgeIntegral | EdgeString))>
+<!ELEMENT EdgeWildcard ((Wild))>
+
+<!ELEMENT EdgeLiteral ((EdgeQuotation | EdgeIntegral | EdgeString))>
+<!ELEMENT EdgeVariable ((LIdent))>
+
+<!ELEMENT EdgeExprLabel ((EdgeLiteral | EdgeVariable))>
+<!ELEMENT EdgePatternStruct ((EdgePatternDecon))>
+
+<!ELEMENT EdgeActualized ((EdgeLiteral | EdgeVariable))>
+
+<!ELEMENT EdgePatternDecon ((EdgeLiteral | EdgeVariable), (VertexExprLabel), (VertexExprLabel))>
+
+<!ELEMENT GraphIsolatedPattern ((GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral), (GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral))>
+<!ELEMENT GraphPointedPattern ((VertexExprLabel))>
+<!ELEMENT GraphConnectedPattern ((EdgeLiteral | EdgeVariable), (GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral), (GraphIsolatedPattern | GraphPointedPattern | GraphConnectedPattern | GraphLiteral))>
+<!ELEMENT GraphLiteral ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT ConditionIn ((ConjunctionCondition | DisjunctionCondition | StructuralCondition | BaseCondition))>
+<!ELEMENT DeclIn ((GeneratorDecl | LocalDecl))>
+
+<!ELEMENT GeneratorDecl ((GenVertex | GenEdge | GenGraph))>
+<!ELEMENT LocalDecl ((BoundVertex | BoundEdge | BoundGraph))>
+
+<!ELEMENT VertexIntension ((VertexComprehensionForm))>
+<!ELEMENT VertexExtenionExpr ((VertexExtensionForm | VertexExtensionBuiltinExpr))>
+
+<!ELEMENT EdgeIntension ((EdgeComprehensionForm))>
+<!ELEMENT EdgeExtenionExpr ((EdgeExtensionForm | EdgeExtensionBuiltinExpr))>
+
+<!ELEMENT GraphIntension ((GraphComprehensionForm))>
+<!ELEMENT GraphExtenionExpr ((GraphExtensionForm | GraphExtensionBuiltinExpr))>
+
+<!ELEMENT VertexExtensionForm ((VertexQuotation | VertexIntegral | VertexString)*)>
+<!ELEMENT VertexExtensionBuiltinExpr ((VertexSet | SourceSet | SinkSet))>
+
+<!ELEMENT EdgeExtensionForm ((EdgeQuotation | EdgeIntegral | EdgeString)*)>
+<!ELEMENT EdgeExtensionBuiltinExpr ((EdgeSet))>
+
+<!ELEMENT GraphExtensionForm ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty)*)>
+<!ELEMENT GraphExtensionBuiltinExpr ((GraphComponents))>
+
+<!ELEMENT VertexSet ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT SourceSet ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT SinkSet ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT EdgeSet ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT GraphComponents ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT ConjunctionCondition ((ConjunctionCondition | DisjunctionCondition | StructuralCondition | BaseCondition), (ConjunctionCondition | DisjunctionCondition | StructuralCondition | BaseCondition))>
+<!ELEMENT DisjunctionCondition ((ConjunctionCondition | DisjunctionCondition | StructuralCondition | BaseCondition), (ConjunctionCondition | DisjunctionCondition | StructuralCondition | BaseCondition))>
+<!ELEMENT StructuralCondition ((GraphIsolatedCond | GraphPointedCond | GraphConnectedCond | GraphStructureLiteral))>
+<!ELEMENT BaseCondition ((VertexBuiltinExpr | GraphBuiltinExpr | AtomicCondition | NegatedCondition))>
+
+<!ELEMENT GraphIsolatedCond ((GraphIsolatedCond | GraphPointedCond | GraphConnectedCond | GraphStructureLiteral), (GraphIsolatedCond | GraphPointedCond | GraphConnectedCond | GraphStructureLiteral))>
+<!ELEMENT GraphPointedCond ((VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated))>
+<!ELEMENT GraphConnectedCond ((EdgeLabelLiteralCondition | EdgeLabelAtomicCondition), (GraphIsolatedCond | GraphPointedCond | GraphConnectedCond | GraphStructureLiteral), (GraphIsolatedCond | GraphPointedCond | GraphConnectedCond | GraphStructureLiteral))>
+<!ELEMENT GraphStructureLiteral ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT VertexStructureSum ((VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated), (VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated))>
+<!ELEMENT VertexStructureMult ((VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated), (VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated))>
+<!ELEMENT VertexStructureLiteral ((VertexQuotation | VertexIntegral | VertexString))>
+<!ELEMENT VertexStructureVariable ((Verity | Absurdity | Nullity))>
+<!ELEMENT VertexStructureNegated ((VertexStructureSum | VertexStructureMult | VertexStructureLiteral | VertexStructureVariable | VertexStructureNegated))>
+
+<!ELEMENT EdgeLabelLiteralCondition ((EdgeQuotation | EdgeIntegral | EdgeString))>
+<!ELEMENT EdgeLabelAtomicCondition ((Verity | Absurdity | Nullity))>
+
+<!ELEMENT VertexBuiltinExpr ((SinkBuiltin | SourceBuiltin))>
+<!ELEMENT GraphBuiltinExpr ((EmptyGraphBuiltin))>
+<!ELEMENT AtomicCondition ((Verity | Absurdity | Nullity))>
+<!ELEMENT NegatedCondition ((VertexBuiltinExpr | GraphBuiltinExpr | AtomicCondition | NegatedCondition))>
+
+<!ELEMENT SinkBuiltin ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+<!ELEMENT SourceBuiltin ((VertexSum | VertexMult | VertexLiteral | VertexVariable | VertexNegated))>
+
+<!ELEMENT EmptyGraphBuiltin ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+
+<!ELEMENT Verity (EMPTY)>
+<!ELEMENT Absurdity (EMPTY)>
+<!ELEMENT Nullity (EMPTY)>
+
+<!ELEMENT EdgeQuotation ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT EdgeIntegral ((Integer))>
+<!ELEMENT EdgeString ((String))>
+
+<!ELEMENT VertexQuotation ((Isolated | Selected | Connected | Recursed | Pointed | Variable | Applied | Empty))>
+<!ELEMENT VertexIntegral ((Integer))>
+<!ELEMENT VertexString ((String))>
+
+
+<!-- ] -->

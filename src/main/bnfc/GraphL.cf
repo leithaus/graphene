@@ -1,0 +1,255 @@
+-- -*- mode: Haskell;-*-
+-- Filename:    GraphL.cf
+-- Authors:     lgmeredith                                                   
+-- Creation:    Thu Jun 12 23:22:00 2008
+-- Copyright:   Not supplied
+-- Description: A Graph DSL
+-- ------------------------------------------------------------------------
+
+Isolated        . GraphExpr      ::= GraphExpr "|" GraphExpr1               ;
+Selected        . GraphExpr1     ::= SelectionExpr                          ;
+Connected       . GraphExpr1     ::= EdgePlus "(" VertexSelectionExpr "," VertexSelectionExpr ")" ;
+Recursed        . GraphExpr1     ::= "(" "rec" UIdent Formals "=" GraphExpr2 ")" Actuals ;
+Pointed         . GraphExpr2     ::= "<" Vertex ">"                         ;
+Variable        . GraphExpr2     ::= UIdent                                 ;
+Applied         . GraphExpr2     ::= UIdent Actuals                         ;
+Empty           . GraphExpr2     ::= "Nil"                                  ;
+
+_               . GraphExpr      ::= GraphExpr1                             ;
+_               . GraphExpr1     ::= GraphExpr2                             ;
+_               . GraphExpr2     ::= "(" GraphExpr ")"                      ;
+
+FormalsFullForm . Formals        ::= "(" [LIdent] ";" [LIdent] ")"          ;
+FormalsVertexForm . Formals      ::= "(" [LIdent] ")"                       ;
+
+ActualsFullForm . Actuals        ::= "<" [VertexActual] ";" [EdgeActual] ">" ;
+ActualsVertexForm . Actuals      ::= "<" [VertexActual] ">"                  ;
+
+Selection       . SelectionExpr  ::= "let" [Binding] "in" GraphExpr2        ;
+ComprehensionExpr . SelectionExpr ::= Comprehension                         ;
+VertexSelection . VertexSelectionExpr ::= "let" [VertexBinding] "in" GraphExpr2  ;
+VertexIntensionSelection . VertexSelectionExpr ::= VertexComprehension           ;
+ComprehensionForm . Comprehension ::= "{" Generator "|" [ConditionOrDecl] "}";
+
+VertexComprehensionForm . VertexComprehension ::= "{" VertexGenerator "|" [ConditionOrDecl] "}";
+EdgeComprehensionForm . EdgeComprehension ::= "{" EdgeGenerator "|" [ConditionOrDecl] "}";
+GraphComprehensionForm . GraphComprehension ::= "{" GraphGenerator "|" [ConditionOrDecl] "}";
+
+LRBoundVertex   . VertexBinding  ::= VertexDeconstructor "=" Vertex         ;
+LRBoundEdge     . EdgeBinding    ::= EdgeDeconstructor "=" EdgeExpr         ;
+LRBoundGraph    . GraphBinding   ::= GraphDeconstructor "=" GraphExpr       ;
+
+BoundVertex     . Binding        ::= VertexBinding                          ;
+BoundEdge       . Binding        ::= EdgeBinding                            ;
+BoundGraph      . Binding        ::= GraphBinding                           ;
+
+LRGenVertex   . VertexGenerator  ::= VertexDeconstructor "<-" VertexCollection ;
+LRGenEdge     . EdgeGenerator    ::= EdgeDeconstructor "<-" EdgeCollection     ;
+LRGenGraph    . GraphGenerator   ::= GraphDeconstructor "<-" GraphCollection   ;
+
+GenVertex     . Generator        ::= VertexGenerator                          ;
+GenEdge       . Generator        ::= EdgeGenerator                            ;
+GenGraph      . Generator        ::= GraphGenerator                           ;
+
+VertexSum       . VertexExpr     ::= VertexExpr "+" VertexExpr1             ;
+VertexMult      . VertexExpr1    ::= VertexExpr1 "*" VertexExpr2            ;
+VertexLiteral   . VertexExpr2    ::= Vertex                                 ;
+VertexVariable  . VertexExpr2    ::= LIdent                                 ;
+VertexNegated   . VertexExpr2    ::= "-" VertexExpr2                        ;
+
+_               . VertexExpr     ::= VertexExpr1                            ;
+_               . VertexExpr1    ::= VertexExpr2                            ;
+_               . VertexExpr2    ::= "(" VertexExpr ")"                     ;
+
+VertexExprLabel . VertexDeconstructor ::= VertexExpr                        ;
+VertexActualized . VertexActual  ::= VertexExpr                             ;
+
+EdgeExprNominal . EdgeExpr       ::= Edge                                   ;
+EdgeExprStruct  . EdgeExpr       ::= Edge "(" VertexExpr "," VertexExpr ")" ;
+EdgeName        . EdgePlus       ::= Edge                                   ;
+EdgeWildcard    . EdgePlus       ::= Wild                                   ;
+
+EdgeLiteral     . EdgeLabel      ::= Edge                                   ;
+EdgeVariable    . EdgeLabel      ::= LIdent                                 ;
+EdgeExprLabel   . EdgeExprPattern ::= EdgeLabel                             ;
+EdgePatternStruct . EdgeExprPattern ::= EdgeDeconstructor                   ;
+
+EdgeActualized  . EdgeActual     ::= EdgeLabel                              ;
+
+EdgePatternDecon  . EdgeDeconstructor ::= EdgeLabel "?(" VertexDeconstructor "," VertexDeconstructor ")" ;   
+
+-- Need to fix this using precedence
+GraphIsolatedPattern  . GraphDeconstructor ::= GraphDeconstructor "*" GraphDeconstructor1 ;
+GraphPointedPattern   . GraphDeconstructor1 ::= "<?" VertexDeconstructor "?>" ;
+GraphConnectedPattern . GraphDeconstructor1 ::= EdgeLabel "?(" GraphDeconstructor2 "," GraphDeconstructor2 ")" ;
+GraphLiteral    . GraphDeconstructor2 ::= GraphExpr                         ;
+
+_               . GraphDeconstructor ::= GraphDeconstructor1                ;
+_               . GraphDeconstructor1 ::= GraphDeconstructor2               ;
+_               . GraphDeconstructor2 ::= "[" GraphDeconstructor "]"        ;
+
+
+ConditionIn     . ConditionOrDecl ::= Condition                             ;
+DeclIn          . ConditionOrDecl ::= Decl                                  ;
+
+GeneratorDecl   . Decl            ::= Generator                             ;
+LocalDecl       . Decl            ::= "let" Binding                         ;
+
+VertexIntension . VertexCollection ::= VertexComprehension                  ;
+VertexExtenionExpr . VertexCollection ::= VertexExtension                   ;
+
+EdgeIntension   . EdgeCollection   ::= EdgeComprehension                    ;
+EdgeExtenionExpr   . EdgeCollection   ::= EdgeExtension                     ;
+
+GraphIntension  . GraphCollection  ::= GraphComprehension                   ;
+GraphExtenionExpr  . GraphCollection  ::= GraphExtension                    ;
+
+VertexExtensionForm . VertexExtension ::= "{@" [Vertex] "@}"                ;
+VertexExtensionBuiltinExpr . VertexExtension ::= VertexExtensionBuiltin     ;
+EdgeExtensionForm   . EdgeExtension   ::= "{-" [Edge] "-}"                  ;
+EdgeExtensionBuiltinExpr   . EdgeExtension ::= EdgeExtensionBuiltin         ;
+GraphExtensionForm  . GraphExtension  ::= "{*" [GraphExpr] "*}"             ;
+GraphExtensionBuiltinExpr  . GraphExtension ::= GraphExtensionBuiltin       ;
+
+VertexSet       . VertexExtensionBuiltin ::= "vertices" "(" GraphExpr ")"   ;
+SourceSet       . VertexExtensionBuiltin ::= "sources" "(" GraphExpr ")"    ;
+SinkSet         . VertexExtensionBuiltin ::= "sinks" "(" GraphExpr ")"      ;
+
+EdgeSet         . EdgeExtensionBuiltin   ::= "edges" "(" GraphExpr ")"      ;
+
+GraphComponents . GraphExtensionBuiltin  ::= "components" "(" GraphExpr ")" ;
+
+-- These Conditions come from the fact that our 'notion of collection'
+-- yields a boolean lattice -- e.g. the powerset of the set of all
+-- expressible graphs
+ConjunctionCondition . Condition  ::= Condition "||" Condition1             ;
+DisjunctionCondition . Condition1 ::= Condition1 "&" Condition2             ;
+
+-- These Conditions come from the structure of the term language
+StructuralCondition  . Condition2 ::= StructureCondition                    ;
+BaseCondition        . Condition2 ::= GroundCondition                       ;
+_                    . Condition  ::= Condition1                            ;
+_                    . Condition1 ::= Condition2                            ;
+_                    . Condition2 ::= "(" Condition ")"                     ;             
+GraphIsolatedCond  . StructureCondition ::= StructureCondition "*" StructureCondition1 ;
+GraphPointedCond   . StructureCondition1 ::= "<??" VertexStructureCondition "??>" ;
+GraphConnectedCond . StructureCondition1 ::= EdgeLabelCondition "??(" StructureCondition2 "," StructureCondition2 ")" ;
+GraphStructureLiteral . StructureCondition2 ::= "'" GraphExpr                   ;
+
+_               . StructureCondition ::= StructureCondition1                ;
+_               . StructureCondition1 ::= StructureCondition2               ;
+_               . StructureCondition2 ::= "[" StructureCondition "]"        ;
+
+VertexStructureSum      . VertexStructureCondition     ::= VertexStructureCondition "+" VertexStructureCondition1             ;
+VertexStructureMult     . VertexStructureCondition1    ::= VertexStructureCondition1 "*" VertexStructureCondition2            ;
+VertexStructureLiteral  . VertexStructureCondition2    ::= Vertex                                 ;
+VertexStructureVariable . VertexStructureCondition2    ::= AtomicFormula                                ;
+VertexStructureNegated  . VertexStructureCondition2    ::= "-" VertexStructureCondition2                        ;
+
+_               . VertexStructureCondition     ::= VertexStructureCondition1                            ;
+_               . VertexStructureCondition1    ::= VertexStructureCondition2                            ;
+_               . VertexStructureCondition2    ::= "(" VertexStructureCondition ")"                     ;
+
+EdgeLabelLiteralCondition . EdgeLabelCondition ::= Edge                     ;
+EdgeLabelAtomicCondition  . EdgeLabelCondition ::= AtomicFormula            ;
+
+VertexBuiltinExpr . GroundCondition ::= VertexBuiltin                       ;
+GraphBuiltinExpr  . GroundCondition ::= GraphBuiltin                        ;
+AtomicCondition   . GroundCondition ::= AtomicFormula                       ;
+NegatedCondition  . GroundCondition ::= "~" GroundCondition                 ;
+
+SinkBuiltin     . VertexBuiltin   ::= "sink" "(" VertexExpr ")"             ;
+SourceBuiltin   . VertexBuiltin   ::= "source" "(" VertexExpr ")"           ;
+
+EmptyGraphBuiltin    . GraphBuiltin  ::= "empty" "(" GraphExpr ")"     ;
+
+Verity          . AtomicFormula   ::= "true"                                ;
+Absurdity       . AtomicFormula   ::= "false"                               ;
+Nullity         . AtomicFormula   ::= "null"                                ;
+
+[]              . [ConditionOrDecl] ::=                                     ;
+(: [])          . [ConditionOrDecl] ::= ConditionOrDecl                     ;
+(:)             . [ConditionOrDecl] ::= ConditionOrDecl "," [ConditionOrDecl] ;
+
+[]              . [Condition]      ::=                                      ;
+(: [])          . [Condition]      ::= Condition                            ;
+(:)             . [Condition]      ::= Condition "," [Condition]            ;
+
+[]              . [Vertex]         ::=                                      ;
+(: [])          . [Vertex]         ::= Vertex                               ;
+(:)             . [Vertex]         ::= Vertex "," [Vertex]                  ;
+
+[]              . [Edge]           ::=                                      ;
+(: [])          . [Edge]           ::= Edge                                 ;
+(:)             . [Edge]           ::= Edge "," [Edge]                      ;
+
+[]              . [VertexActual]   ::=                                      ;
+(: [])          . [VertexActual]   ::= VertexActual                         ;
+(:)             . [VertexActual]   ::= VertexActual "," [VertexActual]      ;
+
+[]              . [EdgeActual]     ::=                                      ;
+(: [])          . [EdgeActual]     ::= EdgeActual                           ;
+(:)             . [EdgeActual]     ::= EdgeActual "," [EdgeActual]          ;
+
+[]              . [GraphExpr]      ::=                                      ;
+(: [])          . [GraphExpr]      ::= GraphExpr                            ;
+(:)             . [GraphExpr]      ::= GraphExpr "," [GraphExpr]            ;
+
+[]              . [LIdent]         ::=                                      ;
+(: [])          . [LIdent]         ::= LIdent                               ;
+(:)             . [LIdent]         ::= LIdent "," [LIdent]                  ;
+
+[]              . [Binding]        ::=                                      ;
+(: [])          . [Binding]        ::= Binding                              ;
+(:)             . [Binding]        ::= Binding ";" [Binding]                ;
+
+[]              . [VertexBinding]  ::=                                      ;
+(: [])          . [VertexBinding]  ::= VertexBinding                        ;
+(:)             . [VertexBinding]  ::= VertexBinding ";" [VertexBinding]    ;
+
+EdgeQuotation   . Edge           ::= "((" GraphExpr "))"                    ;
+EdgeIntegral    . Edge           ::= "((" Integer "))"                      ;
+EdgeString      . Edge           ::= "((" String "))"                       ;
+
+VertexQuotation . Vertex         ::= "[[" GraphExpr "]]"                    ;
+VertexIntegral  . Vertex         ::= "[[" Integer "]]"                      ;
+VertexString    . Vertex         ::= "[[" String "]]"                       ;
+
+comment "//" ;
+comment "/*" "*/" ;
+
+token UIdent (upper (letter | digit | '_')*) ;
+token LIdent (lower (letter | digit | '_')*) ;
+token Wild   '_' char* ;
+
+-- This notation requires the following identities
+-- (G,Nil,-|-) is a monoid
+--
+-- G | Nil = G = Nil | G
+-- G1 | (G2 | G3) = (G1 | G2) | G3
+--
+-- Pointing laws
+-- V1.V2.G = (V1.Nil) | V2.G (provided V1 =/= V2)
+-- V.V.G = V.G
+--
+-- Connection laws
+-- E2(V3.G1,V4.E1(V1.G2,V2.G)) = E1(V1.G2,V2.E2(V3.G1,V4.G))
+
+-- Suppose G1, G2 are graphs, L(G) the language generated by the
+-- grammar above, ~ denotes graph isomorphism,
+-- and = denotes equality under these laws. Are these laws necessary and
+-- sufficient to prove the following
+--
+--    \exists [|-|]: Graph -> L(G). G1 ~ G2 <=> [| G1 |] = [| G2|]
+
+-- Alternative, suppose 
+
+-- Adding E(G1,G2) = E(G2,G1) will give unoriented graphs
+-- In general, it is convenient to write V.Nil as V
+
+-- Examples:
+-- The graph with n vertices and no edges: V1 | ... | Vn
+-- The chain with n vertices: Chain(n) := En-1(Vn.Nil,Vn-1.Chain(n-1))
+-- A two-cycle E2(V2.E1(V1,V2),V1.E1(V1,V2))
+-- An n-cycle En(Vn.Chain(n),V1.Chain(n))
+-- A complete graph of 4 vertices K(4) = E43(V4,V3.E42(V4,V2.(E41(V4,V1.K(3)))))

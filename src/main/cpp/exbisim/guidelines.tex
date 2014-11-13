@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{algorithm,algorithmic,amsmath,amssymb}
+
+\newcommand{\bisim}{\approx}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\add}{\mathit{add}}
+\newcommand{\next}{\mathit{next}}
+\newcommand{\query}{\mathit{query}}
+\newcommand{\push}{\mathit{push}}
+\newcommand{\pop}{\mathit{pop}}
+\newcommand{\queryex}{\query_{\mathrm{ex}, r, l, i, h}}
+\newcommand{\rank}{\mathit{rank}}
+\newcommand{\scan}{\mathit{scan}}
+\newcommand{\sort}{\mathit{sort}}
+
+\renewcommand{\top}{\mathit{top}}
+\renewcommand{\P}{\mathcal{P}}
+\renewcommand{\algorithmicforall}{\textbf{for each}}
+
+\title{Code guidelines for the {\tt exbisim} source code\\{\normalsize for internal usage only}}
+\author{Jelle Hellings}
+
+\sloppy
+\begin{document}
+\maketitle
+
+\section{Introduction}
+These code guidelines do not describe how every aspect of the code should be formatted. This document only describes naming conventions; commenting conventions and some other conventions used in this project. On all other aspects we expect the usage of common sense and the goal should always be to write readable, portable and clear code.
+ 
+This document is further expanded when more conventions or guidelines are introduced within the project.
+
+\section{File conventions}
+All header files have extension {\tt .hpp}, all source code files have extension {\tt .cpp}. Header files should be named to the principle component placed in the header file. Every function, type and member should be declared in a header file. Every function, type and member should be associated with a clear doxygen-like description in the comments. Implementations are placed in an accompanying source code file or implementation header file (templates, inline functions).
+
+The suffix {\tt \_impl} is used for header files containing implementations of parts needed during compile time (templates, inline functions). These implementation header files are included by the declaring header files. The suffix {\tt \_pd} is used for platform dependent declarations (header files) or implementations (source files). 
+
+Header files containing declarations should have inclusion guards of the form {\tt INCLUDE\_PATH\_TO\_FILE\_FILE\_NAME\_HPP\_}. All generic library components are placed in namespaces reflected by the path of the file.
+
+\section{Naming conventions}
+All types, functions, methods and variables have comprehensive descriptive names. We do use short non-descriptive variable names for iterators (for example {\tt i}, {\tt j}, {\tt it} and so forth).
+\begin{enumerate}
+    \item All user defined types are in {\tt CamelCaseWithLeadingUpperCase}.
+    \item All local variables are in {\tt camelCaseWithLeadinglowerCase}.
+    \item Class members (data members and methods) are named in {\tt lower\_\\cases\_with\_underscores}.
+    \item Functions are named in {\tt lower\_cases\_with\_underscores}.
+    \item Macro constants and enumeration constants are in {\tt UPPER\_CASE\_\\WITH\_UNDERSCORES}.
+    \item Namespaces are short descriptive names in {\tt lowercase}.
+\end{enumerate}
+
+\section{Other conventions}
+The following conventions are also used:
+\begin{enumerate}
+    \item We use 4-spaces as the tab-indentation.
+    \item Indentation of multi-line declarations or expressions should lead to pretty formatted (aligned) or with an indentation of at least 8-spaces.
+    \item Every source line with comments has maximum length of 80 characters. Non-comment source lines are limited to a maximum length of 100 characters (whenever reasonable possible).
+    \item Functions should be short and simple enough such that in-function comments should be unnecessary.
+    \item For every function and type every parameter (template and function argument) is described. For every function with clear exception cases these cases are described.
+   \item All source code is ordered alphabetically. Ordering is types first; operators secondary; functions and methods last. Within classes and structs public members appear before protected and private members.
+    \item Each program has a {\tt main} function declaring command line parser options; which are used by an entrypoint library. Each program has an {\tt entrypoint} function called by the library. This function performs the actual tasks of the program.
+\end{enumerate}
+\end{document}

@@ -1,0 +1,59 @@
+\documentclass{article}
+\usepackage{hyperref}
+
+\title{3rdparty libraries}
+\author{Jelle Hellings}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This document describes how the {\tt 3rdparty} subdirectory of the {\tt exbisim} solution directory is organized to allow the {\tt exbisim} solution to build debug and release builds for 32bit and 64bit x86 target platforms.
+
+\section{The 3rd party libraries}
+This software project depends on several 3rd party libraries; we have used the following libraries:
+\begin{enumerate}
+    \item Boost C++ libraries; version 1.46.1; retrieved from \href{http://sourceforge.net/projects/boost/files/boost/1.46.1/boost_1_46_1.7z/download}{SourceForge}.
+    \item libxml2; version 2.7.8; retrieved from \href{ftp://xmlsoft.org/libxml2/libxml2-2.7.8.tar.gz}{xmlsoft.org}.
+    \item STXXL: Standard Template Library for Extra Large Data Sets; version 1.3.1; retrieved from \href{http://sourceforge.net/projects/stxxl/files/stxxl/1.3.1/stxxl-1.3.1.tar.gz/download}{SourceForge}.
+\end{enumerate}
+Our software is developed and tested with Visual Studio 2010 SP1; using the Microsoft (R) 32-bit C/C++ Optimizing Compiler Version 16.00.40219.01 for 80x86 and the Microsoft (R) C/C++ Optimizing Compiler Version 16.00.40219.01 for x64 compilers. The source code is not tested on other platforms; but we did keep platform depended code to a minimum. All platform dependent code is placed in files with {\tt \_pd} suffix. See the code guidelines for more details on file naming conventions used by this project.
+
+\section{Layout of the {\tt 3rdparty} subdirectory}
+The {\tt 3rdparty} subdirectory has a subdirectory {\tt include} containing all header files for the $3$rd party libraries. For each library $n$ there is also a subdirectory {\tt n} containing the build object files where our programs link with. The layout of these subdirectories {\tt n} is {\tt platform/config/lib} where {\tt platform} is {\tt win32} or {\tt x86} and {\tt config} is {\tt debug} or {\tt release}. For each possibility the libraries should be placed in the correct subfolder; the project and solution settings of the {\tt exbisim} solution depend on this structure for correct building the various projects (and programs) for the various target configurations.
+
+\section{Setting up new Visual Studio Projects}
+The file {\tt template.vcxproj.template} in the root directory of the {\tt exbisim} solution can be used as a template of new projects. This template has all libraries, headers and other options preconfigured such that the project can successfully use the mentioned 3rd party libraries.
+
+\section{Building the libraries}
+In general we have followed the details in the documentation of each library when building the libraries. The following subsections describes details for each library.
+
+\subsection{Boost C++ libraries}
+See the \href{http://boost.org/more/getting_started/windows.html}{documentation} for details on the building process. We have written a script {\tt build.bat} to build all variants. This script has a single parameter; the target where all resulting libraries are stored. See the script for any details.
+
+\subsection{STXXL}
+See the \href{http://algo2.iti.kit.edu/stxxl/tags/1.3.1/installation_msvc.html}{documentation} for details on the building process. STXXL can only be build when the Boost C++ libraries have been build. The build process for STXXL has not been automated by us.
+
+Use the {\tt vcvarsall.bat} script provided by your Visual C++ distribution to set the build environment (x64 for 64bits, x86 or no argument for win32). Create the file {\tt make.settings.local} in the root directory of the STXXL sources to configure the resulting STXXL library. Use the provided {\tt stxxl.txt} as a starting point. In the root directory of the STXXL sources run {\tt nmake library\_msvc} to built the STXXL library; and move the resulting file {\tt lib/libstxxl.lib} to the correct position in the {\tt 3rdparty} subdirectory. Clean up the remainder by running {\tt nmake clean\_msvc}.
+
+\subsection{libxml2}
+See the documentation in the subdirectory {\tt win32/readme.txt} in the source distribution of libxml2 for details on building libxml2. Due to a bug in the 2.7.8 release we could not build libxml2 with the provided Makefile.msvc. Therefore we have replaced the not-working Makefile.msvc of the 2.7.8 release by a working version (file is retrieved from \href{http://git.gnome.org/browse/libxml2/tree/win32/Makefile.msvc?id=ae874211d4c4cd1044d9fe5d598049a99526822b}{the GNOME source repository (commit ae874211d4c4cd1044d9fe5d598049a99526822b)}). This working version can be found in the {\tt 3rdparty} subdirectory.
+
+Use the {\tt vcvarsall.bat} script provided by your Visual C++ distribution to set the build environment (x64 for 64bits, x86 or no argument for win32). Use the script {\tt win32/configure.js} to configure the build you want. We only need a very small portion of the libxml2 library (the XML Reader API); as such we have build with the following configuration:
+
+\begin{verbatim}
+cscript configure.js trio=no ftp=no http=no html=no c14n=no
+                     catalog=no docb=no xpath=no xptr=no
+                     xinclude=no iconv=no icu=no iso8859x=no
+                     zlib=no xml_debug=no mem_debug=no
+                     run_debug=no regexps=no modules=no
+                     tree=no reader=yes writer=no walker=no
+                     pattern=no push=yes valid=no sax1=no
+                     legacy=no output=yes schemas=no
+                     schematron=no python=no compiler=msvc
+                     debug=no static=yes cruntime=[/MDd|/MD]
+\end{verbatim}
+
+Where {\tt cruntime=/MDd} is used for debug builds and {\tt cruntime=/MD} is used for release builds. After configuration we have run {\tt nmake /f all} and {\tt nmake /f install} for building the library. The resulting directories {win32/include} and {win32/lib} are used for building our applications; and thus are moved to the appropriate subdirectories of the {\tt 3rdparty} subdirectory of the {\tt exbisim} solution. After building one can clean up by running {\tt nmake /f clean}.
+
+\end{document}

@@ -1,0 +1,205 @@
+<html>
+  <!--
+      Yo! This is creatively licensed.
+  -->
+  <head>
+    <title>The Social Circuit</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>    
+    <!-- Add jQuery library -->
+    <script type="text/javascript" src="js/fancyapps-fancyBox-18d1712/lib/jquery-1.10.1.min.js"></script>
+    
+    <!-- Add mousewheel plugin (this is optional) -->
+    <script type="text/javascript" src="js/fancyapps-fancyBox-18d1712/lib/jquery.mousewheel-3.0.6.pack.js"></script>
+    
+    <!-- Add fancyBox main JS and CSS files -->
+    <script type="text/javascript" src="js/fancyapps-fancyBox-18d1712/source/jquery.fancybox.js?v=2.1.5"></script>
+    <link rel="stylesheet" type="text/css" href="js/fancyapps-fancyBox-18d1712/source/jquery.fancybox.css?v=2.1.5" media="screen" />
+    <script type="text/javascript">    
+      var data = [
+      {
+        image: 'images/Canvas 4.jpg'
+      },
+      {
+        image: 'images/Canvas 16.jpg'
+      },
+      {
+        image: 'images/Canvas 3.jpg'
+      },      
+      {
+        image: 'images/Canvas 5.jpg'
+      },
+      {
+        image: 'images/Canvas 7.jpg'
+      },
+      {
+        image: 'images/Canvas 8.jpg'
+      },
+      {
+        image: 'images/Canvas 9.jpg'
+      },
+      {
+        image: 'images/Canvas 10.jpg'
+      },
+      {
+        image: 'images/Canvas 11.jpg'
+      },
+      {
+        image: 'images/Canvas 12.jpg'
+      },
+      {
+        image: 'images/Canvas 13.jpg'
+      },
+      {
+        image: 'images/Canvas 14.jpg'
+      },
+      {
+        image: 'images/Canvas 15.jpg'
+      },
+      {
+        image: 'images/Canvas 28.jpg'
+      },
+      {
+        image: 'images/Canvas 2.jpg'
+      },
+      {
+        image: 'images/Canvas 17.jpg'
+      },
+      {
+        image: 'images/Canvas 18.jpg'
+      },
+      {
+        image: 'images/Canvas 35.jpg'
+      },
+      {
+        image: 'images/Canvas 19.jpg'
+      },
+      {
+        image: 'images/Canvas 20.jpg'
+      },
+      {
+        image: 'images/Canvas 22.jpg'
+      },
+      {
+        image: 'images/Canvas 23.jpg'
+      },
+      {
+        image: 'images/Canvas 24.jpg'
+      },
+      {
+        image: 'images/Canvas 25.jpg'
+      },
+      {
+        image: 'images/Canvas 26.jpg'
+      },
+      {
+        image: 'images/Canvas 27.jpg'
+      },
+      {
+        image: 'images/Canvas 29.jpg'
+      },
+      {
+        image: 'images/Canvas 30.jpg'
+      },
+      {
+        image: 'images/Canvas 31.jpg'
+      },
+      {
+        image: 'images/Canvas 34.jpg'
+      }      
+      ];
+      $(document).ready(function() {
+      /*
+      *  Simple image gallery. Uses default settings
+      */
+      
+      $('.fancybox').fancybox();
+      });           
+    </script>
+    <style type="text/css">
+      .fancybox-custom .fancybox-skin {
+      box-shadow: 0 0 50px #222;
+      }
+      
+      body {
+      max-width: 700px;
+      margin: 0 auto;
+      }
+    </style>
+    <style type="text/css">
+      canvas { border: 2px solid black; }
+    </style>    
+</head>
+
+
+<body>
+  <div>    
+    <h1>A short comic on social networks, bitcoin, and circuit diagrams</h1>
+    <p align="center">Click on an image to read the comic in full glory!</p>
+    <div>
+      <h2>Some things we all know about social networks</h2>
+      <p>
+        <a class="fancybox" href="images/Canvas 4.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas4s.jpg" alt="" /></a>    
+        <a class="fancybox" href="images/Canvas 16.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas16s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 3.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas3s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 5.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas5s.jpg" alt="" /></a>
+      </p>
+    </div>
+    <div>
+      <h2>A few things we can do to address oversubscription</h2>
+      <p>
+        <a class="fancybox" href="images/Canvas 7.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas7s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 8.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas8s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 9.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas9s.jpg" alt="" /></a>        
+        <a class="fancybox" href="images/Canvas 10.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas10s.jpg" alt="" /></a>
+      </p>
+    </div>
+    <div>
+      <h2>The many roles of cryptocurrency in the social network</h2>
+      <p>        
+        <a class="fancybox" href="images/Canvas 11.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas11s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 12.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas12s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 13.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas13s.jpg" alt="" /></a>        
+        <a class="fancybox" href="images/Canvas 14.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas14s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 15.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas15s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 28.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas28s.jpg" alt="" /></a>
+      </p>
+    </div>
+    <div>
+      <h2>A monadic interlude</h2>
+      <p>                
+        <a class="fancybox" href="images/Canvas 2.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas2s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 17.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas17s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 18.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas18s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 35.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas35s.jpg" alt="" /></a>
+      </p>
+    </div>
+    <div>
+      <h2>The social circuit and cooperative social media</h2>
+      <p>        
+        <a class="fancybox" href="images/Canvas 19.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas19s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 20.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas20s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 22.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas22s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 23.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas23s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 24.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas24s.jpg" alt="" /></a>        
+      </p>
+    </div>
+    <div>
+      <h2>What we've learned about sustainable circuits</h2>
+      <p>        
+        <a class="fancybox" href="images/Canvas 25.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas25s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 26.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas26s.jpg" alt="" /></a>        
+        <a class="fancybox" href="images/Canvas 27.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas27s.jpg" alt="" /></a>        
+      </p>
+    </div>
+    <div>
+      <h2>A new role for bitcoin in sustainable circuits</h2>
+      <p>
+        <a class="fancybox" href="images/Canvas 29.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas29s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 30.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas30s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 31.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas31s.jpg" alt="" /></a>
+        <a class="fancybox" href="images/Canvas 34.jpg" data-fancybox-group="gallery" title="The Social Circuit"><img src="images/Canvas34s.jpg" alt="" /></a>      
+      </p>
+    </div>
+  </div>
+</body>
+</html>

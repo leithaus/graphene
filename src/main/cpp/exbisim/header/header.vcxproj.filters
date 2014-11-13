@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="lib\array.hpp" />
+    <ClInclude Include="lib\array_impl.hpp" />
+    <ClInclude Include="lib\entrypoint.hpp" />
+    <ClInclude Include="lib\entrypoint_impl.hpp" />
+    <ClInclude Include="lib\stxxl\wrapper.hpp" />
+    <ClInclude Include="lib\stxxl\wrapper_pd.hpp" />
+    <ClInclude Include="lib\stxxl\compare.hpp" />
+    <ClInclude Include="lib\stxxl\compare_impl.hpp" />
+    <ClInclude Include="common\records.hpp" />
+    <ClInclude Include="common\records_impl.hpp" />
+    <ClInclude Include="common\types.hpp" />
+    <ClInclude Include="common\format.hpp" />
+    <ClInclude Include="lib\stxxl\value.hpp" />
+    <ClInclude Include="lib\stxxl\value_impl.hpp" />
+    <ClInclude Include="lib\binaryreader.hpp" />
+    <ClInclude Include="lib\binarywriter.hpp" />
+    <ClInclude Include="lib\binaryreader_impl.hpp" />
+    <ClInclude Include="lib\binarywriter_impl.hpp" />
+    <ClInclude Include="common\treetag.hpp" />
+    <ClInclude Include="lib\hash.hpp" />
+    <ClInclude Include="lib\hash_impl.hpp" />
+    <ClInclude Include="common\priorityqueue.hpp" />
+    <ClInclude Include="common\vector.hpp" />
+    <ClInclude Include="lib\stxxl\buffer.hpp" />
+    <ClInclude Include="lib\stxxl\buffer_impl.hpp" />
+    <ClInclude Include="common\xmlread.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="lib\entrypoint.cpp" />
+    <ClCompile Include="common\records.cpp" />
+    <ClCompile Include="common\xmlread.cpp" />
+  </ItemGroup>
+</Project>

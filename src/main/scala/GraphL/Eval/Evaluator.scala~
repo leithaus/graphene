@@ -1,0 +1,375 @@
+// -*- mode: Scala;-*- 
+// Filename:    Evaluator.scala 
+// Authors:     lgm                                                    
+// Creation:    Sun Jan  4 13:44:52 2009 
+// Copyright:   Not supplied 
+// Description: 
+// ------------------------------------------------------------------------
+
+package com.biosimilarity.GraphL.model.GraphL.Eval
+
+import com.biosimilarity.GraphL.model.GraphL._
+
+import org.jgrapht._
+import org.jgrapht.graph._
+import org.jgrapht.ext._
+
+//import java.util.Collections
+//import java.util.List
+//import java.util.ArrayList
+
+trait Evaluator {
+  self : Eval.ConcreteGraphTypes =>
+    type VEnvType = Map[Absyn.VertexVariable,VertexType]
+    type EEnvType = Map[Absyn.EdgeVariable,EdgeType]
+    type GEnvType = Map[Absyn.Variable,GraphType]
+            
+    case class EvaluationContext(
+      _graph : GraphType,
+      _vertexEnv : VEnvType,
+      _edgeEnv : EEnvType,
+      _graphEnv : GEnvType,
+      _parent : Option[EvaluationContext],
+      _vertices : Option[List[VertexType]],
+      _edges : Option[List[EdgeType]]
+    ) {    
+	def graph : GraphType = _graph
+	def vertexEnv : VEnvType = _vertexEnv
+	def edgeEnv : EEnvType = _edgeEnv
+	def graphEnv : GEnvType = _graphEnv
+	def parent : Option[EvaluationContext] = _parent
+        def vertices : Option[List[VertexType]] = _vertices
+	def edges : Option[List[EdgeType]] = _edges
+      }
+
+    trait StdGraphEvaluator
+      extends Eval.MultifoldVisitor[EvaluationContext,EvaluationContext] {
+	def matches(
+	  p : Absyn.VertexLiteral,
+	  v : Absyn.Vertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{
+	  (List() : List[(Absyn.VertexVariable, VertexType)])
+	}
+	def matches(
+	  p : Absyn.VertexVariable,
+	  v : Absyn.Vertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{	  
+	  List((p,v))
+	}
+	def matches(
+	  p : Absyn.VertexMult,
+	  v : Absyn.Vertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{
+	  // BugBug -- LGM tbd
+	  throw new Exception( "not implemented yet" )
+	}
+	def matches(
+	  p : Absyn.VertexSum,
+	  v : Absyn.Vertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{
+	  // BugBug -- LGM tbd
+	  throw new Exception( "not implemented yet" )
+	}
+	def matches(
+	  p : Absyn.VertexNegated,
+	  v : Absyn.Vertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{
+	  // BugBug -- LGM tbd
+	  throw new Exception( "not implemented yet" )
+	}
+	def matches(
+	  p : Absyn.LRBoundVertex,
+	  arg : EvaluationContext
+	) : List[(Absyn.VertexVariable, VertexType)]
+	=
+	{
+	  // Yuck!!!
+	  (p.vertexdeconstructor_.asInstanceOf[Absyn.VertexExprLabel].vertexexpr_
+	     match {
+	       case vlit : Absyn.VertexLiteral => 		 
+		 matches(
+		   vlit,
+		   p.vertex_,
+		   arg
+		 )
+	       case vvar : Absyn.VertexVariable => 
+		 matches(
+		   vvar,
+		   p.vertex_,
+		   arg
+		 )
+	       case vmult : Absyn.VertexMult => 
+		 matches(
+		   vmult,
+		   p.vertex_,
+		   arg
+		 )
+	       case vsum : Absyn.VertexSum => 
+		 matches(
+		   vsum,
+		   p.vertex_,
+		   arg
+		 )
+	       case vneg : Absyn.VertexNegated => 
+		 matches(
+		   vneg,
+		   p.vertex_,
+		   arg
+		 )
+	       })
+	}
+	def matches(
+	  p : Absyn.LRBoundEdge,
+	  arg : EvaluationContext
+	) : List[(Absyn.EdgeVariable, EdgeType)]
+	=
+	{
+	  // BugBug -- LGM tbd
+	  (List() : List[(Absyn.EdgeVariable, EdgeType)])
+	}
+	def matches(
+	  p : Absyn.LRBoundGraph,
+	  arg : EvaluationContext
+	) : List[(Absyn.Variable, GraphType)]
+	=
+	{
+	  // BugBug -- LGM tbd
+	  (List() : List[(Absyn.Variable, GraphType)])
+	}
+
+	def leaf( arg : EvaluationContext ) : EvaluationContext = arg
+	
+	override def meaning(
+	  p : Absyn.Pointed,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	=
+	{
+	  arg.graph.addVertex( p.vertex_ );
+	  scala.collection.jcl.Conversions.convertSet(
+	    arg.graph.vertexSet
+	  ).toList match {  // BugBug -- lgm
+	    case v :: vs => // assuming jgrapht puts new vertex
+	      arg match {   // on the front of the vertex set!!!
+		case EvaluationContext(
+		  g, ve, ee, ge, _, vs, es
+		  ) =>
+		    new EvaluationContext(
+		      g, ve, ee, ge, Some( arg ), vs, es
+		      )
+	      }
+	    case _ => throw new Exception(
+				  "error adding vertex"
+				)
+	  }
+	}	
+
+	override def meaning(
+	  p : Absyn.LRBoundVertex,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	= 
+	{
+	  val substs = matches( p, arg );
+	  arg.vertexEnv ++ substs;
+	  arg match {
+	    case EvaluationContext( g, ve, ee, ge, _, vs, es ) =>
+	      EvaluationContext(
+		g, ve, ee, ge, Some( arg ),
+		Some(
+		  substs.map( { p => p match { case (a,b) => b } } )
+		),
+		es
+	      )
+	  }
+	}
+	  
+	// default meaning of combine is 'disjoint' union
+	def combine(
+	  x : EvaluationContext,
+	  y : EvaluationContext,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	= {
+	    if ( !(y == arg) ) {
+	      for( v <- scala.collection.jcl.Conversions.convertSet(
+		      y.graph.vertexSet
+		    ) ) yield arg.graph.addVertex( v ) ;
+	      for( e <- scala.collection.jcl.Conversions.convertSet(
+		      y.graph.edgeSet
+		    ) ) yield arg.graph.addEdge(
+				y.graph.getEdgeSource( e ),
+				y.graph.getEdgeTarget( e ),
+				e
+			      ) ;
+	    };
+
+	    for( v <- scala.collection.jcl.Conversions.convertSet(
+			x.graph.vertexSet
+		) ) yield arg.graph.addVertex( v ) ;
+	    for( e <- scala.collection.jcl.Conversions.convertSet(
+			x.graph.edgeSet
+		) ) yield arg.graph.addEdge(
+			    x.graph.getEdgeSource( e ),
+			    x.graph.getEdgeTarget( e ),
+			    e
+			  ) ;
+	  
+	  arg
+	}
+	
+	override def visit(
+	  p : Absyn.Connected,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	=
+        {
+	  arg match {
+	    case EvaluationContext( g, ve, ee, ge, prnt, vs, es ) => {
+	      p.vertexselectionexpr_1.accept(
+		this,
+		new EvaluationContext(
+		  g, ve, ee, ge, Some( arg ), vs, es
+		)
+	      ) match {
+		case EvaluationContext(
+		  gl, vel, eel, gel, argl, ovsl, oesl
+		) => {
+		  p.vertexselectionexpr_2.accept(
+		    this,
+		    new EvaluationContext(
+		      g, ve, ee, ge, Some( arg ), vs, es
+		    )
+		  ) match {
+		    case EvaluationContext(
+		      gr, ver, eer, ger, argr, ovsr, oesr
+		    ) => {
+		      combine(
+			EvaluationContext(
+			  gl, vel, eel, gel, argl, ovsl, oesl
+			),
+			EvaluationContext(
+			  gr, ver, eer, ger, argr, ovsr, oesr
+			),
+			arg
+		      );
+		      for( vsl <- ovsl; vsr <- ovsr )
+			yield if ( vsl.length == vsr.length ) {
+			for( ( vl, vr ) <- (vsl zip vsr) )
+			  yield {
+			    // BugBug -- lgm 
+			    (arg.graph.addEdge( vl, vr ))._wire =
+			      p.edgeplus_ match {
+				case edgewild : Absyn.EdgeWildcard => None
+				case edgename : Absyn.EdgeName => {
+				  Some(
+				    edgename.edge_ match {
+				      case edgeint : Absyn.EdgeIntegral =>
+					edgeint
+				      case edgestr : Absyn.EdgeString =>
+					edgestr
+				      case edgeq : Absyn.EdgeQuotation =>
+					edgeq
+				    }
+				  )
+				}
+			      }
+			  }
+		      }
+		      else {
+			throw new Exception(
+			  "mismatched connection list lengths"
+			)
+		      }
+		    }
+		  }		  
+		}
+	      }
+	      
+	    }
+	  } ;	  
+	  arg
+	}
+	
+	override def visit(
+	  p : Absyn.Pointed,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	=
+	{
+	  meaning( p, arg )
+	}
+
+	override def visit(
+	  p : Absyn.Selected,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	=
+        {
+	  p.selectionexpr_.accept( this, arg )
+	}
+
+	override def visit(
+	  p : Absyn.VertexSelection,
+	  arg : EvaluationContext
+	) : EvaluationContext
+	=
+        {
+	  p.graphexpr_.accept(
+	    this,
+	    (( arg /:
+	    scala.collection.jcl.Conversions.convertList(
+	      p.listvertexbinding_
+	    ) )(
+	      { ( acc : EvaluationContext, b : Absyn.VertexBinding ) =>
+		meaning( b.asInstanceOf[Absyn.LRBoundVertex], acc )
+	     }))
+	  )
+	}
+	
+	def evaluateGraph(
+	  expr : Absyn.GraphExpr,
+	  context : EvaluationContext
+	) : GraphType =
+	  expr match {
+	    case isolated : Absyn.Isolated =>
+	      visit( isolated, context ).graph
+	    case selected : Absyn.Selected =>
+	      visit( selected, context ).graph
+	    case connected : Absyn.Connected =>
+	      visit( connected, context ).graph
+	    case recursed : Absyn.Recursed =>
+	      visit( recursed, context ).graph
+	    case pointed : Absyn.Pointed =>
+	      visit( pointed, context ).graph
+	    case variable : Absyn.Variable =>
+	      visit( variable, context ).graph
+	    case applied : Absyn.Applied =>
+	      visit( applied, context ).graph
+	    case empty : Absyn.Empty =>
+	      visit( empty, context ).graph
+	  }
+
+      }  
+}
+
+object TheEvaluator extends Evaluator with ConcreteGraphTypes {
+  case class BasicEvaluator( context : EvaluationContext )
+  extends StdGraphEvaluator {
+  }
+}

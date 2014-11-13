@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,eucal}
+
+\newenvironment{grammar}{\begin{tabular}{r@{ $~\longleftarrow~$ }l}}{\end{tabular}}
+\newcommand{\grammarrule}[2]{#1&#2\\}
+\newcommand{\List}{\mathcal{L}}
+\newcommand{\ListSummary}{{\List_\mathcal{S}}}
+
+\title{In- and output programming interface}
+\author{Jelle Hellings}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This document describes the in- and output interfaces provided by these programs.
+
+\section{Program interfaces}
+Almost all programs developed for this project read input from some file and write the results to another file. For this input and output we have used various binary data formats. We shall describe these formats in this section. Every used format starts with a unique format identifier. The following identifiers are currently in use: {\tt tree}, {\tt dag}, {\tt dagfp}, and {\tt dagfps} (see {\tt exbisim/header/common/\\format.hpp}). The {\tt dagfp} format provides a $\List$ representation of graphs; the {\tt dagfps} format provides a $\ListSummary$ representation of graphs.
+
+In the current implementation all numbers (represented by $\mathbb{N}$ in the format grammars) are limited to $32$-bit unsigned integers. This limits the possible values to the range $[0, 2^{32} - 1)$; this also limits the number of nodes in a tree or in a graph. All integers are stored in machine-dependent order (little endian for the common Intel x86 architecture).
+
+\subsection{The format {\tt tree}}
+The {\tt tree} format is described by the following grammar:
+
+\begin{grammar}
+\grammarrule{Tree}{{\tt tree} Node}
+\grammarrule{Node}{{\tt o} Label Node* {\tt c}}
+\grammarrule{Label}{$\mathbb{N}$}
+\end{grammar}
+
+Trees in {\tt tree} format start with the format identifier {\tt tree}. The content of a tree consists of a single root node. A node consists of an open tag {\tt o} and close tag {\tt c}; a node has a single label. Node open {\tt o} and close {\tt o} tags are represented by a byte in input; with ASCII values `o' (111) and `c' (99) (see {\tt exbisim/header/common/treetag.hpp}).
+ 
+\subsection{The format {\tt dag}}
+The {\tt dag} format is described by the following grammar:
+
+\begin{grammar}
+\grammarrule{Dag}{{\tt dag} NumNodes Node*}
+\grammarrule{Node}{Label NumChildren ChildNodeIdentifier*}
+\grammarrule{NumNodes}{$\mathbb{N}$}
+\grammarrule{Label}{$\mathbb{N}$}
+\grammarrule{NumChildren}{$\mathbb{N}$}
+\grammarrule{ChildNodeIdentifier}{$\mathbb{N}$}
+\end{grammar}
+
+Directed acyclic graphs in {\tt dag} format start with the format identifier {\tt dag}. The content of a directed acyclic graph consists of the number of nodes $n$ followed by exactly $n$ nodes. Each node consists of a label, the number of child nodes $c$ followed by exactly $c$ child node identifiers. The following interpretation is placed on this structure:
+
+\begin{enumerate}
+    \item The $i$-th node in the list has identifier $i-1$ (thus we have node identifiers in the range $[0, \mathrm{NumNodes})$).
+    \item All children of node $n$ with identifier $i$ must have a smaller node identifier then node $n$; this assures that the directed acyclic graph is reverse-topological ordered.
+\end{enumerate}
+
+\subsection{The format {\tt dagfp}}
+The {\tt dagfp} format provides a $\List$ representation of graphs. The {\tt dagfp} format is described by the following grammar:
+
+\begin{grammar}
+\grammarrule{DagFP}{{\tt dagfp} NumNodes Node*}
+\grammarrule{Node}{Label NumParents ParentNodeIdentifier*}
+\grammarrule{NumNodes}{$\mathbb{N}$}
+\grammarrule{Label}{$\mathbb{N}$}
+\grammarrule{NumParents}{$\mathbb{N}$}
+\grammarrule{ParentNodeIdentifier}{$\mathbb{N}$}
+\end{grammar}
+
+Directed acyclic graphs in {\tt dagfp} format are similar to directed acyclic graphs in {\tt dag} format. The main difference is that in directed acyclic graphs in {\tt dagfp} format each node has an edge adjacency list pointing to all parent nodes instead of an edge adjacency lists pointing to all child nodes.
+
+Directed acyclic graphs in {\tt dagfp} format start with the format identifier {\tt dagfp}. The content of such a directed acyclic graph consists of the number of nodes $n$ followed by exactly $n$ nodes. Each node consists of a label, the number of parent nodes $p$ followed by exactly $p$ parent node identifiers. The following interpretation is placed on this structure:
+
+\begin{enumerate}
+    \item The $i$-th node in the list has identifier $i-1$ (thus we have node identifiers in the range $[0, \mathrm{NumNodes})$).
+    \item All parents of node $n$ with identifier $i$ must have larger node identifiers then node $n$; this assures that the directed acyclic graph is reverse-topological ordered.
+\end{enumerate}
+
+\subsection{The format {\tt dagfps}}
+The {\tt dagfps} format provides a $\ListSummary$ representation of graphs. The {\tt dagfps} format is described by the following grammar:
+
+\begin{grammar}
+\grammarrule{DagFPS}{{\tt dagfps} NumPartitionBlocks PartitionBlock*}
+\grammarrule{ PartitionBlock}{NumNodes Rank Label Node*}
+\grammarrule{Node}{NumParents ParentNodeIdentifier*}
+\grammarrule{ NumPartitionBlocks}{$\mathbb{N}$}
+\grammarrule{NumNodes}{$\mathbb{N}$}
+\grammarrule{Rank}{$\mathbb{N}$}
+\grammarrule{Label}{$\mathbb{N}$}
+\grammarrule{NumParents}{$\mathbb{N}$}
+\grammarrule{ParentNodeIdentifier}{$\mathbb{N}$}
+\end{grammar}
+
+Directed acyclic graphs in {\tt dagfps} format are similar to directed acyclic graphs in {\tt dag} or {\tt dagfp} format. The main difference with the other directed acyclic graph formats is that the {\tt dagfps} format places more constraints on the ordering of nodes: nodes are grouped in partition blocks wherein every node has {\it at least} the same rank and label. These partition blocks of rank $r$ and label $l$ are lexicographically ordered on $(r, l)$.
+
+Directed acyclic graphs in {\tt dagfps} format start with the format identifier {\tt dagfps}. The content of such a directed acyclic graph consists of the number of partition blocks $b$ followed by exactly $b$ partition blocks. Each partition blocks consists of a number of nodes $n$ placed in the group, a rank and a label; followed by exactly $n$ nodes. Each node consist of a number of parents $p$ followed by exactly $p$ parent node identifiers. The following interpretation is placed on this structure:
+
+\begin{enumerate}
+    \item The $i$-th node in the list has identifier $i-1$.
+    \item All parents of node $n$ with identifier $i$ must have larger node identifiers then node $n$; this assures that the directed acyclic graph is reverse-topological ordered.
+    \item The rank of a node is equal to the length of the longest path to a leaf node in the directed acyclic graph.
+    \item The nodes in the message are sorted on increasing $(\mathrm{rank}, \mathrm{label})$.
+\end{enumerate}
+
+\end{document}
